@@ -1,0 +1,33 @@
+{
+  "name": "github-readme-generator",
+  "version": "1.0.0",
+  "description": "Comprehensive GitHub Profile README Generator with dynamic widgets and automation",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend",
+    "automation"
+  ],
+  "scripts": {
+    "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install && cd ../automation && npm install",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": "cd backend && npm run dev",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "build:frontend": "cd frontend && npm run build",
+    "build:backend": "cd backend && npm run build",
+    "start": "cd backend && npm start",
+    "test": "npm run test --workspaces"
+  },
+  "keywords": [
+    "github",
+    "readme",
+    "generator",
+    "profile",
+    "markdown"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

@@ -1,0 +1,57 @@
+name: Update README with Dynamic Content
+
+on:
+  schedule:
+    # Runs every 6 hours
+    - cron: '0 */6 * * *'
+  
+  # Allows manual trigger from Actions tab
+  workflow_dispatch:
+  
+  # Runs on push to main branch
+  push:
+    branches:
+      - main
+    paths:
+      - 'README.template.md'
+      - '.github/workflows/update-readme.yml'
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write
+    
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      
+      - name: 📦 Install dependencies
+        run: |
+          cd automation
+          npm install
+      
+      - name: 🚀 Update README
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_USERNAME: ${{ github.repository_owner }}
+          WAKATIME_API_KEY: ${{ secrets.WAKATIME_API_KEY }}
+          RSS_FEED_URL: ${{ secrets.RSS_FEED_URL }}
+        run: |
+          cd automation
+          node scripts/update-readme.js
+      
+      - name: 💾 Commit and push if changed
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add README.md
+          git diff --quiet && git diff --staged --quiet || (git commit -m "🤖 Auto-update README [skip ci]" && git push)
