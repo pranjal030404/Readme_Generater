@@ -43,6 +43,7 @@ const initialTemplate = {
       youtube: '',
       enabled: true
     },
+    githubComprehensiveStats: null,
     certifications: [],
     widgets: {
       githubStats: {
@@ -170,6 +171,18 @@ const useTemplateStore = create((set, get) => ({
         customization: {
           ...state.template.customization,
           ...customData
+        }
+      }
+    }));
+  },
+  
+  setGitHubComprehensiveStats: (stats) => {
+    set(state => ({
+      template: {
+        ...state.template,
+        sections: {
+          ...state.template.sections,
+          githubComprehensiveStats: stats
         }
       }
     }));

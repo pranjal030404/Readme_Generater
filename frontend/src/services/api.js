@@ -66,7 +66,8 @@ export const generateAPI = {
 export const githubAPI = {
   getProfile: (username) => api.get(`/github/${username}`),
   getRepos: (username) => api.get(`/github/${username}/repos`),
-  getActivity: (username, limit = 10) => api.get(`/github/${username}/activity?limit=${limit}`)
+  getActivity: (username, limit = 10) => api.get(`/github/${username}/activity?limit=${limit}`),
+  getComprehensiveStats: (usernameOrUrl) => api.get(`/github/${encodeURIComponent(usernameOrUrl)}/comprehensive`)
 };
 
 // Stats API

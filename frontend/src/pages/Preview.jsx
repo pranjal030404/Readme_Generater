@@ -38,7 +38,7 @@ function Preview() {
     <div className="min-h-screen bg-gray-50 dark:bg-dark-900 py-8">
       <div className="container mx-auto px-4 max-w-4xl">
         <div className="bg-white dark:bg-dark-800 rounded-lg shadow-lg p-8">
-          <div className="markdown-preview">
+          <div className="markdown-preview prose dark:prose-invert max-w-none">
             <ReactMarkdown remarkPlugins={[remarkGfm]}>
               {content}
             </ReactMarkdown>

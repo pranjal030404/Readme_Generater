@@ -41,6 +41,9 @@ function Header() {
             <Link to="/templates" className="hover:text-primary-600 transition-colors">
               Templates
             </Link>
+            <Link to="/github-stats" className="hover:text-primary-600 transition-colors">
+              GitHub Stats
+            </Link>
             <a 
               href="https://github.com" 
               target="_blank" 

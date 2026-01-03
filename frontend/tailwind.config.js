@@ -1,3 +1,5 @@
+import typography from '@tailwindcss/typography';
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
@@ -7,6 +9,7 @@ export default {
   theme: {
     extend: {
       colors: {
+        border: 'hsl(var(--border) / <alpha-value>)',
         primary: {
           50: '#eff6ff',
           100: '#dbeafe',
@@ -57,6 +60,8 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    typography,
+  ],
   darkMode: 'class',
 }

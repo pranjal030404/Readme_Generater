@@ -4,7 +4,7 @@
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-gray-200 dark:border-dark-700;
   }
   
   body {
@@ -67,7 +67,7 @@
 
 /* Markdown preview styles */
 .markdown-preview {
-  @apply prose dark:prose-invert max-w-none;
+  @apply max-w-none;
 }
 
 .markdown-preview h1 {

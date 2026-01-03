@@ -8,6 +8,7 @@ import Generator from './pages/Generator';
 import Templates from './pages/Templates';
 import Preview from './pages/Preview';
 import AuthCallback from './pages/AuthCallback';
+import GitHubStats from './pages/GitHubStats';
 import NotFound from './pages/NotFound';
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
             <Route index element={<Home />} />
             <Route path="generator" element={<Generator />} />
             <Route path="templates" element={<Templates />} />
+            <Route path="github-stats" element={<GitHubStats />} />
             <Route path="preview/:shareId" element={<Preview />} />
             <Route path="auth/callback" element={<AuthCallback />} />
             <Route path="*" element={<NotFound />} />

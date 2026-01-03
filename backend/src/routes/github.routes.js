@@ -64,4 +64,23 @@ router.get('/:username/activity', optionalAuth, async (req, res) => {
   }
 });
 
+// @route   GET /api/github/:usernameOrUrl/comprehensive
+// @desc    Get comprehensive GitHub statistics (accepts username or URL)
+router.get('/:usernameOrUrl/comprehensive', optionalAuth, async (req, res) => {
+  try {
+    const stats = await githubService.getComprehensiveStats(req.params.usernameOrUrl);
+    
+    res.json({
+      success: true,
+      data: stats
+    });
+  } catch (error) {
+    console.error('Get comprehensive stats error:', error);
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+});
+
 module.exports = router;
