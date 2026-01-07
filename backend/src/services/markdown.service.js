@@ -1,9 +1,9 @@
 class MarkdownGenerator {
   constructor(template) {
-    this.template = template;
-    this.sections = template.sections;
-    this.theme = template.theme;
-    this.customization = template.customization;
+    this.template = template || {};
+    this.sections = template.sections || {};
+    this.theme = template.theme || { accentColor: '#3b82f6' };
+    this.customization = template.customization || {};
   }
 
   // Generate complete markdown
@@ -69,8 +69,14 @@ class MarkdownGenerator {
 
     // Visitor counter
     if (this.sections.widgets?.visitorCounter?.enabled) {
-      const username = basicInfo.name?.replace(/\s/g, '') || 'visitor';
-      header += `\n![Visitor Count](https://profile-counter.glitch.me/${username}/count.svg)\n`;
+      const username = this.sections.socialLinks?.github 
+        ? this.sections.socialLinks.github.split('/').pop() 
+        : basicInfo.name?.replace(/\s/g, '') || null;
+      
+      // Only add visitor counter if we have a valid username
+      if (username && username !== '' && username !== 'username') {
+        header += `\n![Visitor Count](https://profile-counter.glitch.me/${username}/count.svg)\n`;
+      }
     }
 
     return header;
@@ -112,6 +118,9 @@ class MarkdownGenerator {
 
     let section = '## 🛠️ Skills & Technologies\n\n';
 
+    const badgeStyle = this.customization.badgeStyle || 'for-the-badge';
+    const accentColor = (this.theme.accentColor || '#3b82f6').replace('#', '');
+
     const categories = [
       { name: 'Languages', items: skills.languages },
       { name: 'Frameworks & Libraries', items: skills.frameworks },
@@ -125,7 +134,7 @@ class MarkdownGenerator {
       if (category.items?.length > 0) {
         section += `### ${category.name}\n\n`;
         section += category.items.map(skill => 
-          `![${skill}](https://img.shields.io/badge/${skill.replace(/ /g, '%20')}-${this.theme.accentColor.replace('#', '')}.svg?style=for-the-badge)`
+          `![${skill}](https://img.shields.io/badge/${skill.replace(/ /g, '%20')}-${accentColor}.svg?style=${badgeStyle})`
         ).join(' ') + '\n\n';
       }
     });
@@ -136,24 +145,30 @@ class MarkdownGenerator {
   // Generate Projects section
   generateProjects() {
     const { projects } = this.sections;
-    if (!projects || projects.length === 0) return '';
+    
+    // Ensure projects is an array
+    if (!projects) return '';
+    const projectsArray = Array.isArray(projects) ? projects : [];
+    if (projectsArray.length === 0) return '';
 
     let section = '## 📂 Featured Projects\n\n';
 
-    projects.forEach(project => {
+    projectsArray.forEach(project => {
       section += `### ${project.name}\n\n`;
       
       if (project.description) {
         section += `${project.description}\n\n`;
       }
 
-      if (project.techStack?.length > 0) {
-        section += `**Tech Stack:** ${project.techStack.map(tech => `\`${tech}\``).join(', ')}\n\n`;
+      // Handle both techStack and technologies properties
+      const techList = project.techStack || project.technologies || [];
+      if (techList?.length > 0) {
+        section += `**Tech Stack:** ${techList.map(tech => `\`${tech}\``).join(', ')}\n\n`;
       }
 
       const links = [];
-      if (project.liveUrl) links.push(`[Live Demo](${project.liveUrl})`);
-      if (project.repoUrl) links.push(`[Repository](${project.repoUrl})`);
+      if (project.liveUrl || project.demo) links.push(`[Live Demo](${project.liveUrl || project.demo})`);
+      if (project.repoUrl || project.github) links.push(`[Repository](${project.repoUrl || project.github})`);
       
       if (links.length > 0) {
         section += links.join(' | ') + '\n\n';
@@ -171,31 +186,55 @@ class MarkdownGenerator {
 
   // Generate GitHub Stats section
   generateGitHubStats() {
-    const { widgets } = this.sections;
+    const { widgets, socialLinks } = this.sections;
     if (!widgets) return '';
 
     let section = '## 📊 GitHub Statistics\n\n';
     let hasStats = false;
 
-    const username = this.sections.socialLinks?.github?.split('/').pop() || 'username';
+    // Extract username from GitHub URL or use default
+    let username = null;
+    if (socialLinks?.github) {
+      const githubUrl = socialLinks.github;
+      const match = githubUrl.match(/github\.com\/([^\/]+)/);
+      username = match ? match[1] : githubUrl.split('/').pop();
+    }
+
+    // If no valid username, don't generate stats widgets
+    if (!username || username === 'username' || username === '') {
+      return '';
+    }
+
     const theme = widgets.githubStats?.theme || 'dark';
 
     // GitHub Stats Card
     if (widgets.githubStats?.enabled) {
+      section += `<div align="center">\n\n`;
+      section += `### 📈 GitHub Stats\n\n`;
       section += `![GitHub Stats](https://github-readme-stats.vercel.app/api?username=${username}&show_icons=true&theme=${theme}&hide_border=true&count_private=true)\n\n`;
+      section += `*Stats may take a moment to load. If unavailable, the service is temporarily down.*\n\n`;
+      section += `</div>\n\n`;
       hasStats = true;
     }
 
     // GitHub Streak
     if (widgets.githubStreak?.enabled) {
+      section += `<div align="center">\n\n`;
+      section += `### 🔥 Contribution Streak\n\n`;
       section += `![GitHub Streak](https://github-readme-streak-stats.herokuapp.com/?user=${username}&theme=${theme}&hide_border=true)\n\n`;
+      section += `*Streak stats may take a moment to load. If unavailable, the service is temporarily down.*\n\n`;
+      section += `</div>\n\n`;
       hasStats = true;
     }
 
     // Top Languages
     if (widgets.topLanguages?.enabled) {
       const layout = widgets.topLanguages.layout || 'compact';
+      section += `<div align="center">\n\n`;
+      section += `### 💻 Most Used Languages\n\n`;
       section += `![Top Languages](https://github-readme-stats.vercel.app/api/top-langs/?username=${username}&layout=${layout}&theme=${theme}&hide_border=true)\n\n`;
+      section += `*Language stats calculated by GitHub and may take time to update.*\n\n`;
+      section += `</div>\n\n`;
       hasStats = true;
     }
 
@@ -251,6 +290,9 @@ class MarkdownGenerator {
 
     let section = '## 🤝 Connect with Me\n\n';
 
+    const badgeStyle = this.customization.badgeStyle || 'for-the-badge';
+    const accentColor = (this.theme.accentColor || '#3b82f6').replace('#', '');
+
     const links = [
       { platform: 'GitHub', url: socialLinks.github, icon: 'github' },
       { platform: 'LinkedIn', url: socialLinks.linkedin, icon: 'linkedin' },
@@ -268,7 +310,7 @@ class MarkdownGenerator {
     if (validLinks.length === 0) return '';
 
     validLinks.forEach(link => {
-      section += `[![${link.platform}](https://img.shields.io/badge/${link.platform}-${this.theme.accentColor.replace('#', '')}.svg?style=for-the-badge&logo=${link.icon}&logoColor=white)](${link.url})\n`;
+      section += `[![${link.platform}](https://img.shields.io/badge/${link.platform}-${accentColor}.svg?style=${badgeStyle}&logo=${link.icon}&logoColor=white)](${link.url})\n`;
     });
 
     if (socialLinks.email) {

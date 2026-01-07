@@ -6,17 +6,19 @@ import SkillsForm from './Forms/SkillsForm';
 import ProjectsForm from './Forms/ProjectsForm';
 import SocialLinksForm from './Forms/SocialLinksForm';
 import WidgetsForm from './Forms/WidgetsForm';
+import StyleCustomizationForm from './Forms/StyleCustomizationForm';
 
 function FormSections({ onGenerate }) {
   const [activeSection, setActiveSection] = useState('basicInfo');
 
   const sections = [
-    { id: 'basicInfo', label: 'Basic Info', component: BasicInfoForm },
-    { id: 'aboutMe', label: 'About Me', component: AboutMeForm },
-    { id: 'skills', label: 'Skills', component: SkillsForm },
-    { id: 'projects', label: 'Projects', component: ProjectsForm },
-    { id: 'socialLinks', label: 'Social Links', component: SocialLinksForm },
-    { id: 'widgets', label: 'Widgets', component: WidgetsForm },
+    { id: 'basicInfo', label: 'Basic Info', icon: '👤', component: BasicInfoForm },
+    { id: 'aboutMe', label: 'About Me', icon: '📝', component: AboutMeForm },
+    { id: 'skills', label: 'Skills', icon: '🛠️', component: SkillsForm },
+    { id: 'projects', label: 'Projects', icon: '📂', component: ProjectsForm },
+    { id: 'socialLinks', label: 'Social Links', icon: '🔗', component: SocialLinksForm },
+    { id: 'widgets', label: 'Widgets', icon: '📊', component: WidgetsForm },
+    { id: 'styling', label: 'Styling', icon: '🎨', component: StyleCustomizationForm },
   ];
 
   const ActiveComponent = sections.find(s => s.id === activeSection)?.component;
@@ -29,13 +31,14 @@ function FormSections({ onGenerate }) {
           <button
             key={section.id}
             onClick={() => setActiveSection(section.id)}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+            className={`px-4 py-2 rounded-lg font-medium transition-all flex items-center gap-2 ${
               activeSection === section.id
-                ? 'bg-primary-600 text-white'
-                : 'bg-gray-100 dark:bg-dark-700 hover:bg-gray-200 dark:hover:bg-dark-600'
+                ? 'bg-primary-600 text-white shadow-md scale-105'
+                : 'bg-gray-100 dark:bg-dark-700 hover:bg-gray-200 dark:hover:bg-dark-600 hover:scale-105'
             }`}
           >
-            {section.label}
+            <span className="text-lg">{section.icon}</span>
+            <span>{section.label}</span>
           </button>
         ))}
       </div>

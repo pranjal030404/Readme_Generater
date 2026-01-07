@@ -95,13 +95,18 @@ const initialTemplate = {
   theme: {
     name: 'dark',
     accentColor: '#3b82f6',
-    headerStyle: 'default'
+    headerStyle: 'default',
+    fontFamily: 'system-ui',
+    fontSize: 'medium',
+    headingStyle: 'default'
   },
   customization: {
     layout: 'professional',
     sectionOrder: ['aboutMe', 'skills', 'githubStats', 'projects', 'socialLinks'],
     alignment: 'left',
-    showTableOfContents: false
+    showTableOfContents: false,
+    badgeStyle: 'for-the-badge',
+    emojiStyle: 'default'
   }
 };
 
